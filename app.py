@@ -1,7 +1,5 @@
 from distutils.log import error
-from tkinter import E
 from flask import Flask, request, render_template, redirect, url_for,session
-import socket
 from cliente_app import conexao_cliente_primeira_msg
 from modelo_db import connection_db
 from modelo_pusher import connection_pusher
@@ -148,4 +146,4 @@ def chat_client():
     # evento = 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
