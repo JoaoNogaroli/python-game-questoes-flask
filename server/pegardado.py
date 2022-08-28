@@ -2,7 +2,7 @@ import csv
 from dataclasses import replace
 from importlib.resources import path
 import os
-from tkinter.tix import COLUMN
+
 import pandas as pd
 def pegardado2():
     cwd = os.getcwd()         
