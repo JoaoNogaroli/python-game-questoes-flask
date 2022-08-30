@@ -2,7 +2,6 @@ import csv
 from dataclasses import replace
 from importlib.resources import path
 import os
-
 import pandas as pd
 def pegardado2():
     cwd = os.getcwd()         

@@ -2,7 +2,6 @@ html body{
     margin:0
 }
 
-
 .topo{
     top:0;
     display:inline-flex;
@@ -14,4 +13,15 @@ html body{
     font-size: 40px;
     font-family: kiona;
     background-color: rgba(0, 0, 0, 0.68);
+}
+
+.formulario{
+    
+    text-align: center;
+    margin-top: 10%;
+    font-size: 20px;
+}
+
+form input{
+    width: 60vw;
 }

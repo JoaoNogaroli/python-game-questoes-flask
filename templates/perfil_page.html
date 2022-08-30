@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=<<<device-width>>>, initial-scale=1.0"> -->
+    <link rel="stylesheet" href="../static/index.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+
+    <style>
+
+        ::-webkit-scrollbar{
+            width: 7px;
+        }
+        
+        ::-webkit-scrollbar-track{
+            border:0px solid rgba(120, 121, 134, 0.411);
+            box-shadow: inset 0 0 0.5px rgba(43, 39, 63, 0.301);
+        }
+        ::-webkit-scrollbar-thumb{
+            background-color: rgba(51, 51, 77, 0.486);
+            border-radius: 5px;
+        
+        }
+        
+    </style>
+
+    <div class="topo">
+        <h2>Nix Questões: <p id="nome">{{nome}}</p></h2>
+    </div>
+    <br>
+    <hr>
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-sm">
+                <div class="card" style="min-height: 70vh;">
+                    <div class="card-body">
+                        <h2 class="h2">Check Invites</h2>
+                    </div>
+                    <hr>
+                    <div class="card-body">
+                        <div id="content" class=" bg-white rounded " style="background-color: #d1ced1;  min-width: 40vw;  height:500px ; text-align: justify;   overflow-y: scroll;">
+
+                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <p class="h3">Desafie seus amigos!</p>
+                <form action="{{ url_for('go_to_pagina3_filtros') }}" method="POST">
+
+                    <input  type="text" name="nome" value="{{nome}}" readonly><br><br>
+                    <button type="submit">Crie seu desafio personalizado</button>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    
+    Pusher.logToConsole = true;
+    var pusher = new Pusher('3eef3f7cf3be6643b599', {
+        cluster: 'sa1'
+    });
+    var channel = pusher.subscribe('nixquestoes');
+
+    $(document).ready(function(){
+        nome = $("#nome").text();
+        var evento = '_evento'+nome;
+        dicio = {
+            'nome':nome,
+            'evento':evento,
+        }
+
+        channel.bind(evento, function(data){
+            console.log(data);
+
+            modelo_message1 = `<hr>
+                <p class="username_chat"><strong>${data.nome_from}</strong>: </p>
+                <input readonly="" style="width:100%;background-color:transparent; text-decorate:none; border:none" value="${data.msg_a_enviar}">
+                <hr>`;
+
+            $("#content").append(modelo_message1);  
+
+        });
+
+    })
+
+
+</script>
+
+</body>
+
+</html>
