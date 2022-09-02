@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=<<<device-width>>>, initial-scale=1.0"> -->
+    <link rel="stylesheet" href="../static/page3-filtros.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
+    <title>Document</title>
+</head>
+<body>
+    <div class="topo">
+        <h2>Nix Questões:</h2><h3 id="nome_from">{{nome_from}}</h3>
+    </div>
+
+
+    <div class="container">
+        <br>
+            <div class="row">
+                <div class="col">
+                    <div class="col-sm">
+                        <div class="card shadow-sm p-3 mb-5 bg-white rounded" style="min-width: 18rem;">
+                            <div class="card-header">
+                            <h4>Selecione os Filtros</h4>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="filtro_disciplina" style="display:flex ;">
+                                        <h6 style="margin-right: 20px;">Disciplina:  </h6>
+                                            <select id="disciplina" class="selectpicker" data-live-search="true" style="width: 100%; text-align: center;">
+                                                <option>--Selecione uma disciplina--</option>
+                                                {% for disciplina in disciplinas %}
+                                                    <option>{{disciplina}}</option>
+                                                    
+                                                {% endfor %}        
+                                            </select>       
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="filtro_disciplina" style="display:flex ;">
+                                        <h6 style="margin-right: 20px;">Tópico:  </h6>
+                                        <select id="topicos" class="selectpicker" data-live-search="true" style="width: 100%; text-align: center;">
+                                            <!-- <option>Crase</option>
+                                            <option>Atos administrativos</option>
+                                            <option>Poder Executivo</option> -->
+                                        </select>       
+
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="filtro_quantidade_questao"  style="display:flex ;">
+                                        <h6 style="margin-right: 20px;">Quantidade de Questões:  </h6>
+                                        <select id="quantidade" class="selectpicker" data-live-search="true" style="width: 100%; text-align: center;">
+                                            <option>10</option>
+                                            <option>20</option>
+                                            <option>30</option>
+                                        </select>  
+                                    </div>
+                                </li>
+                            </ul><br>
+                            <input type="button" id="botao_filtrar_questoes"class="btn btn-dark" value="Filtrar"></input><br><br>
+                            <div class="icon_loader" style="width: 100%; display:flex;height: auto;">
+                                <img id="loaderIcon" style="width: 50px;height: 50px;visibility:hidden;display:none;margin-right: 10px;" src="https://c.tenor.com/I6kN-6X7nhAAAAAj/loading-buffering.gif" alt="..."/>
+                                <!-- <input style="border:none; width:100%" readonly id="link_ir" type="textarea" value=""><br> -->
+                                <h6 class="h6" id="link_ir" ></h6>
+                            </div>
+                        </div>
+                       
+                        <div class="col-sm">
+                            <div class="card shadow-sm p-3 mb-5 bg-white rounded" style="min-width: 28rem;">
+        
+                                <div class="card-header">
+                                    <h4 id="nome_chat_to">↑↑↑{nome escolhido do amigo}↑↑↑ </h4>
+                                </div>
+                                
+                                <div id="content" class=" bg-white rounded " style="background-color: #d1ced1;  width: auto;  height:500px ; text-align: justify;   overflow-y: scroll;">
+                                <!-- mensagens do chat -->
+                                    
+                                </div>
+                                
+                                <input type="text" name="" placeholder="Escreva sua mensagem" id="input_text_mensagem"><br>
+                                <input id="enviar_msg_chat" type="button" class="btn btn-dark" value="Enviar"></input>                                
+                               
+                            </div>
+    
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="col-sm">
+                        <div class="card shadow-sm p-3 mb-5 bg-white rounded" style="min-width: 18rem;">
+                            <div class="card-header" >
+                                <h4>Busque seus Amigos</h4>
+                            </div>
+                            <!-- <input id="myInput" type="text" placeholder="Search.."> -->
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <table id="myTable" class="table table-striped" style="width:100%; ">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Último Visto</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody_change">
+
+                                            {% for usuarios in total_users %}
+                                            <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.35);">
+                                                <td>{{usuarios[1]}}</td>
+                                                <td>Online há {{usuarios[2]}}</td>
+                                                <td id="td_botao_clicar_chat"><button id="{{usuarios[1]}}" name="{{usuarios[0]}}" type="button" class="btn btn-dark">Enviar Link</button></td>
+                                            
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </li>
+
+                        </div>
+                    </div>
+
+                    
+                    
+                </div>
+                <!-- <div class="w-100"></div>
+                <div class="col">Column</div>
+                <div class="col">Column</div> -->
+            </div>
+    </div>
+
+<script>
+    // $(document).ready(function(){
+    //     $("#myInput").on("keyup", function() {
+    //     var value = $(this).val().toLowerCase();
+    //     $("#myTable tr").filter(function() {
+    //         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    //     });
+    //     });
+    // });
+    $(document).ready( function () {
+
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('3eef3f7cf3be6643b599', {
+            cluster: 'sa1'
+        });
+        var channel = pusher.subscribe('nixquestoes');
+    
+        let momento;
+
+        let evento;
+
+        let evento_chat;
+
+        let df;
+        $('#myTable').DataTable();
+
+        $("#disciplina").on('change', function(){
+            selecao_disciplina = $(this).val();
+
+            dicio = {
+                'disciplina':selecao_disciplina,
+            }
+            // console.log(selecao_disciplina);
+            $.post('/disciplina_retornar_topico',dicio, function(data){
+                $("#topicos").empty();
+                // console.log(data);
+                for (i = 0; i < data.length; i++) {
+                    let message = `
+                        <option>${data[i]}</option>
+
+                    `
+                    $("#topicos").append(message)
+                }
+                    
+            })
+        });
+
+        
+        $("#botao_filtrar_questoes").on('click',function(){
+            var disciplina = $("#disciplina").val();
+            var topico = $("#topicos").val();
+            var quantidade = $("#quantidade").val();
+            const now = new Date();
+            const momento = now.getTime();
+            dicio = {
+                
+                'disciplina' : disciplina,
+                'topico' : topico,
+                'quantidade' : quantidade,
+                'momento':momento,
+            }
+            // console.log(dicio)
+
+            // $.post('/link_questao', dicio, function(data){
+            //     $("#link_ir").val(data['link']);
+            //     // console.log(data);
+
+            //     df = data['df'];
+            // })
+            $("#loaderIcon").css('visibility', 'visible');
+            $("#loaderIcon").css('display', 'flex');
+            $("#link_ir").text('Aguarde enquanto o link é gerado,por favor siga escolhendo seu OPONENTE! -->')
+
+
+            
+            
+        });
+
+       
+        
+        // $("#enviar_msg_chat").on('click',function(){
+        //     console.log("func");
+        //     console.log(df);
+
+        // })
+        
+        // [------------FEITO DATATABLE PEGAR OS BOTOES ------------]
+        $('button').on('click', function(){
+            var disciplina = $("#disciplina").val();
+            var topico = $("#topicos").val();
+            var quantidade = $("#quantidade").val();
+            const now = new Date();
+            momento = now.getTime();
+
+
+            i_nome_chat_to = $(this).attr('name');
+            nome_chat_to = $(this).attr('id');
+            $("#nome_chat_to").text(nome_chat_to)
+            nome_from = $('#nome_from').text();
+
+            dicio = {
+                    'disciplina':disciplina,
+                    'topico':topico,
+                    'quantidade':quantidade,
+                    'nome_from':nome_from,                    
+                    'nome_chat_to':nome_chat_to,
+                    'i_nome_chat_to':i_nome_chat_to,
+                    'momento':momento,
+                }
+            // console.log(dicio)
+            $.post('/link_questao',dicio, function(data){
+                // console.log(data)
+                $("#input_text_mensagem").val(data['link']);
+                evento = data['evento'];
+                evento_chat = data['evento_chat'];
+            });
+
+        })
+
+        $('#myTable_length').on('click', function(){
+            var disciplina = $("#disciplina").val();
+            var topico = $("#topicos").val();
+            var quantidade = $("#quantidade").val();
+
+            const now = new Date();
+            momento = now.getTime();
+            // console.log('[--- clickando na mudança ---]')
+            $('button').on('click', function(){
+                i_nome_chat_to = $(this).attr('name');
+                // console.log('[--- botao clicando ---]')
+                // console.log(i_nome_chat_to)
+                nome_chat_to = $(this).attr('id');
+                $("#nome_chat_to").text(nome_chat_to)
+                nome_from = $('#nome_from').text();
+
+                dicio = {
+                    'disciplina':disciplina,
+                    'topico':topico,
+                    'quantidade':quantidade,
+                    'nome_from':nome_from,                    
+                    'nome_chat_to':nome_chat_to,
+                    'i_nome_chat_to':i_nome_chat_to,
+                    'momento':momento,
+                }
+                // console.log(dicio)
+                $.post('/link_questao',dicio, function(data){
+                    console.log(data)
+                    $("#input_text_mensagem").val(data['link']);
+                    evento = data['evento'];
+                    evento_chat = data['evento_chat'];
+                });
+            });
+
+        });
+            
+        $('.paginate_button ').on('click', function(){
+
+            var disciplina = $("#disciplina").val();
+            var topico = $("#topicos").val();
+            var quantidade = $("#quantidade").val();
+
+            const now = new Date();
+            momento = now.getTime();
+            // console.log('[--- clicando no pagination ---]')
+            $('button').on('click', function(){
+                i_nome_chat_to = $(this).attr('name');
+                // console.log('[--- botao clicando ---]')
+                // console.log(i_nome_chat_to)
+                nome_chat_to = $(this).attr('id');
+                $("#nome_chat_to").text(nome_chat_to);
+                nome_from = $('#nome_from').text();
+
+                dicio = {
+                    'disciplina':disciplina,
+                    'topico':topico,
+                    'quantidade':quantidade,
+                    'nome_from':nome_from,                    
+                    'nome_chat_to':nome_chat_to,
+                    'i_nome_chat_to':i_nome_chat_to,
+                    'momento':momento,
+                }
+                // console.log(dicio)
+                $.post('/link_questao',dicio, function(data){
+                    console.log(data)
+                    $("#input_text_mensagem").val(data['link']);
+                    evento = data['evento'];
+                    evento_chat = data['evento_chat'];
+                });
+            });
+
+        });
+
+        //   [----- FIM FEITO DATATABLE BOTOES -----------]
+
+        $("#enviar_msg_chat").on('click', function(){
+
+            msg_to = $("#nome_chat_to").text();
+            evento = '_evento'+msg_to;
+            msg_a_enviar = $("#input_text_mensagem").val();
+            // console.log('evento_chat ---> '+ evento_chat)
+            dicio = {
+                'nome_from':nome_from,
+                'evento':evento,
+                'msg_a_enviar':msg_a_enviar,
+            }
+            // console.log('[---enviando msg---]'+ msg_to)
+            $.post('/msg_chat_enviar', dicio, function(data){
+                $("#input_text_mensagem").val('');
+                // console.log(data)
+                modelo_message1 = `<hr>
+                <p class="username_chat"><strong>${nome_from}</strong>: </p>
+                <input readonly="" style="width:100%;background-color:transparent; text-decorate:none; border:none" value="${msg_a_enviar}">
+                <hr>`;
+
+                $("#content").append(modelo_message1);  
+            });
+
+            channel.bind(msg_to, dicio, function(data){
+                console.log('[-----area pusher-----]')
+                console.log(data)
+
+               
+            })
+        });
+
+    });
+</script>
+
+
+</body>
+
+</html>

@@ -67,7 +67,7 @@ class connection_db:
         return lista
     
     def gel_userid(self, nome):
-
+    
         conn = self.get_connection()
         cursor = conn.cursor()
         # cursor.execute("INSERT INTO lista_promocoes (nome_empresa, tipo_produto, preco,bairro, imagem) VALUES (%s,%s,%s,%s,%s);", (nome_empresa,tipo_produto,preco,bairro,render_file))
@@ -79,8 +79,56 @@ class connection_db:
         conn.close()
 
         return lista
+
+    def get_user_by_id(self, id):
+
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        # cursor.execute("INSERT INTO lista_promocoes (nome_empresa, tipo_produto, preco,bairro, imagem) VALUES (%s,%s,%s,%s,%s);", (nome_empresa,tipo_produto,preco,bairro,render_file))
+        # conn.commit()
+        cursor.execute("SELECT username FROM contas WHERE userid = '"  + id +"'")
+        lista = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return lista
         
+    # def checar_gabarito(self, id_questao):
+        
+    #     conn = self.get_connection()
+    #     cursor = conn.cursor()
+    #     # cursor.execute("INSERT INTO lista_promocoes (nome_empresa, tipo_produto, preco,bairro, imagem) VALUES (%s,%s,%s,%s,%s);", (nome_empresa,tipo_produto,preco,bairro,render_file))
+    #     # conn.commit()
+    #     cursor.execute("SELECT username FROM contas WHERE userid = '"  + id_questao +"'")
+    #     lista = cursor.fetchall()
 
+    #     cursor.close()
+    #     conn.close()
 
+    #     return lista
 
+    def insert_convite(self,evento,link, momento,user_1, user_2):
+        conn = self.get_connection()
+        
+        #print(conn)
+        cursor = conn.cursor()
+        time_stamp = time.time()
+        cursor.execute("INSERT INTO convites (evento,link, momento,user_1, user_2) VALUES (%s,%s,%s,%s,%s);", (evento,link, momento,user_1, user_2))
+        conn.commit()
+        cursor.close()
+        conn.close()
 
+    def get_my_convites(self, nome_to):
+        
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        # cursor.execute("INSERT INTO lista_promocoes (nome_empresa, tipo_produto, preco,bairro, imagem) VALUES (%s,%s,%s,%s,%s);", (nome_empresa,tipo_produto,preco,bairro,render_file))
+        # conn.commit()
+        cursor.execute("SELECT * FROM convites WHERE user_2 = '"  + nome_to +"'")
+        lista = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return lista

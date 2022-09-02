@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=<<<device-width>>>, initial-scale=1.0"> -->
+    <link rel="stylesheet" href="../static/index.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+
+    <style>
+
+        ::-webkit-scrollbar{
+            width: 7px;
+        }
+        
+        ::-webkit-scrollbar-track{
+            border:0px solid rgba(120, 121, 134, 0.411);
+            box-shadow: inset 0 0 0.5px rgba(43, 39, 63, 0.301);
+        }
+        ::-webkit-scrollbar-thumb{
+            background-color: rgba(51, 51, 77, 0.486);
+            border-radius: 5px;
+        
+        }
+        
+    </style>
+
+    <div class="topo">
+        <h2>Nix Questões: <p id="nome">{{nome}}</p></h2>
+    </div>
+    <br>
+    <hr>
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-sm">
+                <div class="card shadow p-3" style="min-height: 70vh;justify-content: center;text-align: center;">
+                    <div class="card-body">
+                        <h2 class="h2">Convites Recebidos</h2>
+                    </div>
+                    <hr>
+                    <div class="card-body" style="font-size:14px; width: 100%;max-width: 30vw;">
+                        <div  class=" bg-white rounded " style="background-color: #d1ced1;width: 100%;  ;height:500px ; text-align: justify;   overflow-y: scroll;">
+                            <table id="myTable" name="myTable" class="table table-striped" style="width:100%; ">
+
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Link</th>
+                                        <th>Data/Hora</th>
+                                    </tr>
+                                </thead>
+                                
+
+                                <tbody id="content">
+                                    {% for convite in convites %}    
+                                    <tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.35);">
+                                        <td>{{convite[4]}}</td>
+                                        <td>{{ convite[2] }}</td>
+                                        <td>{{ convite[3] }}</td>
+                                        
+                                    
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+
+                            </table>
+                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm" style="margin-top: 15vh;">
+                <img class="card-img-top" src="../static/src/student-g547c2074d_1920.jpg" alt="Card image cap">
+                <p class="h3">Desafie seus amigos!</p>
+                <form action="{{ url_for('go_to_pagina3_filtros') }}" method="POST">
+
+                    <input  type="text" name="nome" value="{{nome}}" readonly><br><br>
+                    <button type="submit" class="btn btn-info btn-lg">Crie seu desafio personalizado</button>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    
+    Pusher.logToConsole = true;
+    var pusher = new Pusher('3eef3f7cf3be6643b599', {
+        cluster: 'sa1'
+    });
+    var channel = pusher.subscribe('nixquestoes');
+
+    $(document).ready(function(){
+        nome = $("#nome").text();
+        var evento = '_evento'+nome;
+        dicio = {
+            'nome':nome,
+            'evento':evento,
+        }
+
+        channel.bind(evento, function(data){
+            console.log(data);
+
+            modelo_message1 = 
+            
+            `<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.35);">
+                <td>${data.nome_from}</td>
+                <td>${data.msg_a_enviar}</td>
+                <td></td>
+            </tr>`;
+
+            // $('table').add('id','myTable');
+
+            $("#content").append(modelo_message1);  
+
+        });
+
+
+        $("#myTable").DataTable({
+            order:[[2, 'desc']],
+        });
+
+
+    })
+
+
+
+
+</script>
+
+</body>
+
+</html>
