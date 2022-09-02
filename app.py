@@ -254,7 +254,8 @@ def link_questao():
 
 
     
-    link ='http://127.0.0.1:5000/'+disciplina+'/questao/'+topico+'/'+momento+'/_evento_/'+evento
+    # link ='http://127.0.0.1:5000/'+disciplina+'/questao/'+topico+'/'+momento+'/_evento_/'+evento
+    link ='https://projeto-questoes-chat-nixquest.herokuapp.com/'+disciplina+'/questao/'+topico+'/'+momento+'/_evento_/'+evento
 
     try:
         connection_db().insert_convite(evento,link,momento,nome_from,nome_chat_to)
