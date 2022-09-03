@@ -47,73 +47,83 @@
             border-radius: 5px;
         
         }
+
+        .modal {
+            background-color: rgba(17, 11, 50, 0.929);
+            -webkit-transition: 3.5s;
+            overflow: auto;
+            transition: all 0.3s linear;
+        }
         
     </style>
 
-    <div class="topo">
+    
+        
+        <!--  -->
+
+        <!-- <div class="container"> -->
+    <div class="topo" >
         <h2>Nix Questões</h2>        
     </div>
-    
-    <!--  -->
-
-    <div class="container">
-        <br>
-            <div class="row" style="text-align: center; justify-content: center;">
-                <div class="col">
-                    <div class="col-sm">
-                        <p>1: {{dicio_users['user_1'][0][0]}}</p>
-                        <p>Pontuação: (1/10)</p>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="col-sm">
-                        <p>2: {{dicio_users['user_2'][0][0]}}</p>
-                        <p>Pontuação: (1/10)</p>
-                    </div>
-                </div>
+    <br>
+    <div class="row" style="text-align: center; justify-content: center;">
+        <div class="col">
+            <div id="user_1_div" class="col-sm">
+                1: <h4 id="user_1" value="{{dicio_users['user_1'][0][0]}}">{{dicio_users['user_1'][0][0]}}</h4>
+                <p>Pontuação: (1/10)</p>
             </div>
-            <hr>
-
+        </div>
+        <div class="col">
+            <div id="user_2_div" class="col-sm">
+                2: <h4 id="user_2" value="{{dicio_users['user_2'][0][0]}}">{{dicio_users['user_2'][0][0]}}</h4>
+                <p>Pontuação: (1/10)</p>
+            </div>
+        </div>
     </div>
-    <div class="row shadow p-5" style="width: 100vw; ">
-        {% for i in range (0,len(lista)) %}
-            <div class="col-sm" style="width: 60%;">
-                <div class="card shadow p-3">
-                    <h5 class="card-header">Disciplina: {{lista[i][1]}}</h5>
-                    <h5 class="card-header">Tópico: {{lista[i][3]}}</h5>
-                    <div class="card-body">
-                    <h5 class="card-title">{{lista[i][2]}}</h5>
-                    <hr>
-                    <p class="card-text">{{lista[i][4]}}</p>
-                    <hr>
-                    <form>
-                        {% for item in lista[i][5] %}
-                            <input id="alternativa_selecionada" type="radio" value="{{ item[0:2].strip() }}" name="alternativa_selecionada">{{ item }}<br>
-                            <br>
-                        {% endfor %}
-                            <br>
-                            <div class="botoes" >
-                                <a id="botao_responder" class="btn btn-primary" style="left: 0;margin-left: 20px;">Responder</a>
-                                <!-- <a href="#" class="btn btn-primary" style="margin-left: 20px;">Anterior</a>
-                                <a href="#" class="btn btn-primary" style="margin-left: 20px;">Próxima</a> -->
-                                <p id="resultado" style="font-size: 15px;color:black"></p>
-                                <!-- <div style="color:red;margin-top: 15px;width: 100%;"> -->
-                                    <!-- <h1>per_page_parameter: {{pagination.per_page_parameter}}</h1> -->
-                                    <!-- <h1>{{pagination}}</h1> -->
-                                    <!-- <h1>{{pagination.info}}</h1> -->
-                                <h1 style="width: 100%;color:black;font-size:15px;text-align: center;align-items: center;margin-left: 30%;">{{pagination.links}}</h1>
-                                    <!-- <h1>current page: {{pagination.page}}</h1> -->
-                                <!-- </div>   -->
+    <hr>
+<!-- 
+        </div> -->
+    
+
+    
+    <div class="row shadow p-5" style="width: 100vw;height: 100vh;display: flex; ">
+        <div id="content1" class=" bg-white rounded " style="background-color: #d1ced1;  max-width: 80%;height:100% ; text-align: justify;   overflow-y: scroll;">
+            {% for i in range (0,len(lista)) %}
+                <!-- style="width: 100%;" -->
+                    <div class="col-sm" >
+                        <div class="card shadow p-3">
+                            <h5 class="card-header">Disciplina: {{lista[i][1]}}</h5>
+                            <h5 class="card-header">Tópico: {{lista[i][3]}}</h5>
+                            <div class="card-body">
+                            <h5 class="card-title">{{lista[i][2]}}</h5>
+                            <hr>
+                            <p class="card-text">{{lista[i][4]}}</p>
+                            <hr>
+                            <form>
+                                {% for item in lista[i][5] %}
+                                    <input id="alternativa_selecionada" type="radio" value="{{ item[0:2].strip() }}" name="alternativa_selecionada">{{ item }}<br>
+                                    <br>
+                                {% endfor %}
+                                    <br>
+                                    <div class="botoes" >
+                                        <a id="botao_responder" class="btn btn-primary" style="left: 0;margin-left: 20px;">Responder</a>
+                                        <!-- <a href="#" class="btn btn-primary" style="margin-left: 20px;">Anterior</a>
+                                        <a href="#" class="btn btn-primary" style="margin-left: 20px;">Próxima</a> -->
+                                        <p id="resultado" style="font-size: 15px;color:black"></p>
+                                        
+                                        <!-- PAGINACAO NAO DEU CERTO!! -->
+                                        
+                                    </div>
+                                    
+                            </form>
                             </div>
-                            
-                    </form>
+                        </div>
                     </div>
-                </div>
-            </div>
-        {% endfor %}
+                {% endfor %}
+        </div>
             
-          
-        <div class="col-sm-3 shadow p-3" style="width: 30%;" >
+        <!-- <div id="content" class=" bg-white rounded " style="background-color: #d1ced1;  width: 16%;height: 600px;; text-align: justify;   overflow-y: scroll;">   -->
+        <div class="col shadow p-3">
 
             <div class="chat">
                 <div class="conversando_com">
@@ -139,6 +149,31 @@
 
         </div>
     </div>
+    
+    
+    <div id="myModal" data-backdrop="static"class="modal is-active" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content" style="min-width: 350px;max-width: 70vw;">
+            <div class="modal-header">
+              <h5 class="modal-title">Digite o seu usuário para entrar</h5>
+             
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">@</span>
+                    </div>
+                    <input type="text" id="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                  </div>
+            </div>
+            <div class="modal-footer">
+              <button id="botao_modal" type="submit" class="btn btn-primary">Entrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+   <!-- Modal -->
+  
 
 <script type="text/javascript">
 
@@ -146,6 +181,62 @@
 
     $(document).ready(function() {
 
+        let username;
+        username = $("#username").val();
+        let user_1; 
+        user_1 = $("#user_1").text();
+        let user_2; 
+        user_2 = $("#user_2").text();
+        dicio = {
+            'username':username,
+            'user_1':user_1,
+            'user_2':user_2,
+        }
+        
+        $.post('/checar_login_page_questoes',dicio, function(data){
+            console.log(data)
+            if (data['status']=='ok'){
+                console.log(data['username'])
+                
+            // acabou o if se o user ta online
+            
+            }
+            else{
+                $("#myModal").modal('show');
+                $("#botao_modal").on('click', function(){
+                    username = $("#username").val();
+                    dicio2 = {
+                        'username':username,
+                        'user_1':user_1,
+                        'user_2':user_2,
+                    }
+                    $.post('/checar_login_page_questoes',dicio2, function(data){
+                        console.log(data)
+                        username = $("#username").val()
+                        if (data['ok'] == 'ok'){
+                            console.log('resposta é ok')
+                            $("#myModal").modal('hide');
+                            if (data['username'] == user_1){
+                                console.log('data = user 1')
+                                // $("#user_1").attr({'style':'color:white'})
+                                $("#user_1").attr({'id':'name_from'})
+                                $("#user_2").attr({'id':'name_to'})
+                                $("#user_1_div").attr({'style':'background-color:rgba(0, 240, 57, 1);color:white;font-size:25px;border:1px solid black'})
+                                
+                            }
+                            if (data['username'] == user_2){
+                                console.log('data = user 2')
+                                // $("#user_2").attr({'style':'color:green'})
+                                $("#user_2").attr({'id':'name_from'})
+                                $("#user_1").attr({'id':'name_to'})
+                                $("#user_2_div").attr({'style':'background-color:rgba(0, 240, 57, 1);color:white;font-size:25px;border:1px solid black'})
+                                
+                            }
+                        }
+                    });
+                });
+            }   
+        });
         Pusher.logToConsole = true;
         var pusher = new Pusher('3eef3f7cf3be6643b599', {
             cluster: 'sa1'
@@ -190,6 +281,8 @@
             // var alternativa_selecionada = $('#alternativa_selecionada').attr('value');
             // console.log("alternativa selecionada:_> "+ alter)
             // $.post('')
+
+            var id_questao = "{{ lista[0][0]|safe }}"
             $("#botao_responder").attr('disable');
             var url = $(location).attr('href');
             // var url = 'http://127.0.0.1:5000/adm_geral/questao/Liderança/1662035587755/_evento_/366_evento_451';
@@ -198,15 +291,25 @@
             console.log('----------');
             console.log(gab_questao);
             dicio = {
+                'id_questao':id_questao,
                 'alternativa_selecionada':alter,
                 'gab_questao':gab_questao,
                 'evento':evento,
+                'momento':"{{ momento|safe }}",
+                'status':'pass',
             }
 
             $.post('/tratar_questao', dicio, function(data){
                 console.log(data)
                 $("#resultado").text(data['resultado'])
-            })
+            });
+
+            
+            if(window.closed){
+                $.post('/game_fechado', function(){
+
+                })
+            }
 
             // channel.bind(evento, function(data) {
             //     console.log(data)
@@ -219,9 +322,18 @@
             // });
         
         });
+        
+        
+
+        
+
     });
 
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 
 </body>
 

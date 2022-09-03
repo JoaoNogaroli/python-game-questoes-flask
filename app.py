@@ -11,7 +11,7 @@ import pusher
 from server.pegardado import pegardado2
 from flask_paginate import Pagination, get_page_parameter
 import pandas as pd
-
+import ast
 
 
 pusher_client = pusher.Pusher(
@@ -213,7 +213,6 @@ def disciplina_retornar_topico():
 @app.route('/link_questao', methods=['POST'])
 def link_questao():
 
-    df = pegardado2()
     disciplina = request.form['disciplina']
     topico = request.form['topico']
     quantidade = int(request.form['quantidade'])
@@ -228,40 +227,72 @@ def link_questao():
 
     evento_chat = f'{i_nome_chat_to}_evento'
 
-    if i_nome_from < i_nome_chat_to:
-        evento = f'{i_nome_from}_evento_{i_nome_chat_to}'
-    else:
-        evento = f'{i_nome_chat_to}_evento_{i_nome_from}'
+    # if i_nome_from < i_nome_chat_to:
+    #     evento = f'{i_nome_from}_evento_{i_nome_chat_to}'
+    # else:
+    #     evento = f'{i_nome_chat_to}_evento_{i_nome_from}'
+
+    # evento é nome_solicitante(nome_from) _evento_ nome_convidado (nome_chat_to)
+
+    evento = f'{i_nome_from}_evento_{i_nome_chat_to}'
 
 
     # print(disciplina)
     # print(topico)
     # print(quantidade)
     print('---------------------------------------')
+    df = pegardado2()
+
     df1 = df[df['disciplina']==str(disciplina)]
     # print(df1)
     df2 = df1[df1['assunto'].str.strip().replace(' ','')==str(topico)]
 
     try:
        df3 = df2.sample(quantidade)
-       lista_geral_questoes = df3.values.tolist()
+       lista = df3.values.tolist()
     except Exception:
         df3 = df2
-        lista_geral_questoes = df3.values.tolist()
+        lista = df3.values.tolist()
 
 
     topico = topico.strip().replace(' ','')
 
+    lista_id_questoes = []
+
+    for item in lista:
+        id = item[0]
+        # print(id)
+        lista_id_questoes.append(id)
+    print('[Lista id criada ----]')
+
+
+
 
     
-    # link ='http://127.0.0.1:5000/'+disciplina+'/questao/'+topico+'/'+momento+'/_evento_/'+evento
-    link ='https://projeto-questoes-chat-nixquest.herokuapp.com/'+disciplina+'/questao/'+topico+'/'+momento+'/_evento_/'+evento
+    # link ='http://127.0.0.1:5000/'+disciplina+'/questao/'+topico+'/'+str(quantidade)+'/'+momento+'/_evento_/'+evento+'/_i_/'+str(i_nome_from)
+    link ='https://projeto-questoes-chat-nixquest.herokuapp.com/f'+disciplina+'/questao/'+topico+'/'+momento+'/_evento_/'+evento+'/_i_/'+str(i_nome_from)
 
     try:
-        connection_db().insert_convite(evento,link,momento,nome_from,nome_chat_to)
+        connection_db().insert_convite(evento,link,momento,nome_from,nome_chat_to,str(quantidade))
         print('[convite inserido no bd]')
     except Exception as e:
         print('[Error ao inserir Convite]')
+        print(e)
+        pass
+
+    try:
+        user_1 = nome_from
+        user_2 = nome_chat_to
+        point_user_1 = '0'
+        point_user_2 = '0'
+        winner = None
+        total_questao = len(lista)
+        lista_questao = str(lista)
+        lista_id_questoes = str(lista_id_questoes)
+    
+        connection_db().insert_game(evento,link,momento, user_1,user_2,point_user_1, point_user_2,winner, total_questao,lista_questao,lista_id_questoes) 
+
+    except Exception as e:
         print(e)
         pass
 
@@ -269,7 +300,7 @@ def link_questao():
         'evento_chat':evento_chat,
         'evento':evento,
         'link':link,
-        'df':lista_geral_questoes,
+        
     }
 
     return dicio
@@ -297,10 +328,25 @@ def msg_chat_enviar():
 
     
 # @app.route('/<disciplina>/questao/<topico>/<momento>/_evento_/<evento>/?', methods=['POST'])
-@app.route('/<disciplina>/questao/<topico>/<momento>/_evento_/<evento>/')
-def entender_link_gerar(disciplina,topico,momento,evento):
+@app.route('/<disciplina>/questao/<topico>/<quantidade>/<momento>/_evento_/<evento>/_i_/<i_nome_from>')
+def entender_link_gerar(disciplina,topico,quantidade,momento,evento,i_nome_from):
 
+    try:
+        username = connection_db().get_user_by_id(i_nome_from)
+        username = username[0][0]
+        print('--------')
+        print("USERNAME -> :", username)
+    except:
+        username = 'TEstando'
+        pass
+
+    lista = connection_db().get_lista_game(momento)
+    lista1 = list(lista[0])
     
+    lista = ast.literal_eval(lista1[-2])
+    # print(lista)
+
+    topico = topico.strip().replace(' ','')
 
     
     try:
@@ -310,17 +356,7 @@ def entender_link_gerar(disciplina,topico,momento,evento):
     except Exception as e:
         # print('-------
         pass
-
-    search = False
-    q = request.args.get('q')
-    if q:
-        search = True
-    page = request.args.get(get_page_parameter(),1,type=int)
-
-    # print(disciplina)
-    # print(topico)
-    # print(momento)
-    # print(evento)
+    
     cod_1 = evento[0:3]
     cod_2 = evento[-3:]
 
@@ -334,64 +370,36 @@ def entender_link_gerar(disciplina,topico,momento,evento):
         'cod_2':cod_2,
         'evento':evento,
     }
-
-    # _<><><>----------
-    # fazer o dataframe virar "lista" e o resto está pronto
-    dicio = pd.read_csv('server/lista_csv.csv')
-    dicio = dicio.rename(columns={'Unnamed: 0':'cod_questao'})
-    # print(dicio['disciplina'].unique())
-    # print('-------')
-    # print(disciplina)
-    # print(type(disciplina))
-    # print('-------')
-    disciplinas = dicio[dicio['disciplina']==disciplina]
-    # print(disciplinas)
-    assuntos = disciplinas[disciplinas['assunto']==' Liderança']
-    # assuntos = assuntos.sample(15)
-    lista = assuntos.values.tolist()
-    # print(lista)
-    # print(lista[0])
-    # lista[5] = lista[5].split('\n')
+   
     for i in range(0, len(lista)):
         lista[i][5] = lista[i][5].split('\n')          
 
-    # print('-------')
-    # print(lista[0][5].split('\n'))
-    # print('-------')
+#     ------> pAGINATION FAIL
+    # quantos_por_pagina = 1
+    # pagination = Pagination(page=page, total=len(lista), search=search,per_page=quantos_por_pagina)
+    # if page==1:
+    #     lista = lista[0:(page)*quantos_por_pagina]
+    # else:
+    #     lista = lista[(page-1)*quantos_por_pagina:(page)*quantos_por_pagina]
 
-   
+    print('LISTA FINAl')
+    print(lista)
 
-
-
-
-    quantos_por_pagina = 1
-
-    pagination = Pagination(page=page, total=len(lista), search=search,per_page=quantos_por_pagina)
-    if page==1:
-        lista = lista[0:(page)*quantos_por_pagina]
-    else:
-        
-        lista = lista[(page-1)*quantos_por_pagina:(page)*quantos_por_pagina]
-
-    # print(dicio)
-    # <> pagination
-
-    # print(lista)
-
-    #print(msg[5])
-
-    return render_template('questao_page.html', dicio_users=dicio_users,pagination=pagination, lista=lista,range=range, len=len)
+    return render_template('questao_page.html', dicio_users=dicio_users, lista=lista,range=range, len=len)
 
 
 @app.route('/tratar_questao', methods=['POST'])
 def  tratar_questao():
 
+    id_questao = request.form['id_questao']
     gab_questao = str(request.form['gab_questao']).strip().lower()
     alternativa_selecionada = str(request.form['alternativa_selecionada']).strip().lower()
-    print('Gab')
-    print(gab_questao)
-    print('ALt')
-    print(alternativa_selecionada)
+    # print('Gab')
+    # print(gab_questao)
+    # print('ALt')
+    # print(alternativa_selecionada)
+    print('-- ID---')
+    print(id_questao)
     if gab_questao == alternativa_selecionada:
         print("[CERTO]")
         resultado = 'Certo!'
@@ -419,6 +427,43 @@ def  tratar_questao():
         # return 'mensagem nao enviada'
 
     return dicio
+
+@app.route('/checar_login_page_questoes', methods=["POST"])
+def checar_login_page_questoes():
+
+    try:
+        username = str(request.form['username'])
+        user_1 = str(request.form['user_1'])
+        user_2 = str(request.form['user_2'])
+
+
+        dicio = {
+            'username':username,
+            'user_1':user_1,
+            'user_2':user_2,
+        }
+        print(dicio)
+        
+        # if (username != user_1) or ( username != user_2):
+        #     return 'no'
+
+        # else:
+        #     return 'ok'
+        # print(type(username))
+        # print(type(user_1))
+        # print(type(user_2))
+
+        if username == user_1:
+            return {'ok':'ok', 'username': username,'res':'username=user1'}
+        elif username == user_2:
+            return {'ok':'ok', 'username': username,'res':'username=user2'}
+        else:
+            return {'ok':'no', 'username':username}
+    except Exception as e:
+        print(e)
+        username = 'sem usuario'
+        return {'ok':'no', 'username':username}
+        
 
 if __name__ == "__main__":
     app.run(debug=True)

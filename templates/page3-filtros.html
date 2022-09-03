@@ -27,7 +27,7 @@
                     <div class="col-sm">
                         <div class="card shadow-sm p-3 mb-5 bg-white rounded" style="min-width: 18rem;">
                             <div class="card-header">
-                            <h4>Selecione os Filtros</h4>
+                            <h4>① Selecione os Filtros</h4>
                             </div>
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
@@ -76,7 +76,7 @@
                             <div class="card shadow-sm p-3 mb-5 bg-white rounded" style="min-width: 28rem;">
         
                                 <div class="card-header">
-                                    <h4 id="nome_chat_to">↑↑↑{nome escolhido do amigo}↑↑↑ </h4>
+                                    <h4 id="nome_chat_to">③ ↑↑↑[CHAT]↑↑↑ </h4>
                                 </div>
                                 
                                 <div id="content" class=" bg-white rounded " style="background-color: #d1ced1;  width: auto;  height:500px ; text-align: justify;   overflow-y: scroll;">
@@ -97,7 +97,7 @@
                     <div class="col-sm">
                         <div class="card shadow-sm p-3 mb-5 bg-white rounded" style="min-width: 18rem;">
                             <div class="card-header" >
-                                <h4>Busque seus Amigos</h4>
+                                <h4>② Busque seus Amigos</h4>
                             </div>
                             <!-- <input id="myInput" type="text" placeholder="Search.."> -->
                             <ul class="list-group list-group-flush">
@@ -160,6 +160,10 @@
 
         let evento_chat;
 
+        let disciplina;
+        let topico;
+        let quantidade;
+
         let df;
         $('#myTable').DataTable();
 
@@ -186,9 +190,9 @@
 
         
         $("#botao_filtrar_questoes").on('click',function(){
-            var disciplina = $("#disciplina").val();
-            var topico = $("#topicos").val();
-            var quantidade = $("#quantidade").val();
+            disciplina = $("#disciplina").val();
+            topico = $("#topicos").val();
+            quantidade = $("#quantidade").val();
             const now = new Date();
             const momento = now.getTime();
             dicio = {
@@ -198,7 +202,7 @@
                 'quantidade' : quantidade,
                 'momento':momento,
             }
-            // console.log(dicio)
+            console.log(dicio)
 
             // $.post('/link_questao', dicio, function(data){
             //     $("#link_ir").val(data['link']);
@@ -225,9 +229,9 @@
         
         // [------------FEITO DATATABLE PEGAR OS BOTOES ------------]
         $('button').on('click', function(){
-            var disciplina = $("#disciplina").val();
-            var topico = $("#topicos").val();
-            var quantidade = $("#quantidade").val();
+            // var disciplina = $("#disciplina").val();
+            // var topico = $("#topicos").val();
+            // var quantidade = $("#quantidade").val();
             const now = new Date();
             momento = now.getTime();
 
@@ -246,20 +250,21 @@
                     'i_nome_chat_to':i_nome_chat_to,
                     'momento':momento,
                 }
-            // console.log(dicio)
+            console.log(dicio)
             $.post('/link_questao',dicio, function(data){
                 // console.log(data)
                 $("#input_text_mensagem").val(data['link']);
                 evento = data['evento'];
                 evento_chat = data['evento_chat'];
+                $("#input_text_mensagem").focus();
             });
 
         })
 
         $('#myTable_length').on('click', function(){
-            var disciplina = $("#disciplina").val();
-            var topico = $("#topicos").val();
-            var quantidade = $("#quantidade").val();
+            // var disciplina = $("#disciplina").val();
+            // var topico = $("#topicos").val();
+            // var quantidade = $("#quantidade").val();
 
             const now = new Date();
             momento = now.getTime();
@@ -281,12 +286,13 @@
                     'i_nome_chat_to':i_nome_chat_to,
                     'momento':momento,
                 }
-                // console.log(dicio)
+                console.log(dicio)
                 $.post('/link_questao',dicio, function(data){
                     console.log(data)
                     $("#input_text_mensagem").val(data['link']);
                     evento = data['evento'];
                     evento_chat = data['evento_chat'];
+                    $("#input_text_mensagem").focus();
                 });
             });
 
@@ -294,9 +300,9 @@
             
         $('.paginate_button ').on('click', function(){
 
-            var disciplina = $("#disciplina").val();
-            var topico = $("#topicos").val();
-            var quantidade = $("#quantidade").val();
+            // var disciplina = $("#disciplina").val();
+            // var topico = $("#topicos").val();
+            // var quantidade = $("#quantidade").val();
 
             const now = new Date();
             momento = now.getTime();
@@ -318,12 +324,13 @@
                     'i_nome_chat_to':i_nome_chat_to,
                     'momento':momento,
                 }
-                // console.log(dicio)
+                console.log(dicio)
                 $.post('/link_questao',dicio, function(data){
                     console.log(data)
                     $("#input_text_mensagem").val(data['link']);
                     evento = data['evento'];
                     evento_chat = data['evento_chat'];
+                    $("#input_text_mensagem").focus();
                 });
             });
 

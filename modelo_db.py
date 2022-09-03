@@ -108,13 +108,13 @@ class connection_db:
 
     #     return lista
 
-    def insert_convite(self,evento,link, momento,user_1, user_2):
+    def insert_convite(self,evento,link, momento,user_1, user_2,quantidade):
         conn = self.get_connection()
         
         #print(conn)
         cursor = conn.cursor()
         time_stamp = time.time()
-        cursor.execute("INSERT INTO convites (evento,link, momento,user_1, user_2) VALUES (%s,%s,%s,%s,%s);", (evento,link, momento,user_1, user_2))
+        cursor.execute("INSERT INTO convites (evento,link, momento,user_1, user_2,quantidade) VALUES (%s,%s,%s,%s,%s,%s);", (evento,link, momento,user_1, user_2,quantidade))
         conn.commit()
         cursor.close()
         conn.close()
@@ -132,3 +132,52 @@ class connection_db:
         conn.close()
 
         return lista
+
+    def insert_game(self, evento,link,momento, user_1,user_2,point_user_1, point_user_2,winner, total_questao,lista_questao,lista_id_questoes):
+        conn = self.get_connection()
+        
+        #print(conn)
+        cursor = conn.cursor()
+        #time_stamp = time.time()
+        cursor.execute("INSERT INTO games (evento,link,momento, user_1,user_2,point_user_1, point_user_2,winner, total_questao,lista_questao,lista_id_questoes) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);", (evento,link,momento, user_1,user_2,point_user_1, point_user_2,winner, total_questao,lista_questao,lista_id_questoes))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    def get_lista_game(self, momento):
+            
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        # cursor.execute("INSERT INTO lista_promocoes (nome_empresa, tipo_produto, preco,bairro, imagem) VALUES (%s,%s,%s,%s,%s);", (nome_empresa,tipo_produto,preco,bairro,render_file))
+        # conn.commit()
+        cursor.execute("SELECT * FROM games WHERE momento = '"  + momento +"'")
+        lista = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return lista
+
+    def alter_game_point_user_1(self, point_user_1 ,momento ):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        # cursor.execute("INSERT INTO lista_promocoes (nome_empresa, tipo_produto, preco,bairro, imagem) VALUES (%s,%s,%s,%s,%s);", (nome_empresa,tipo_produto,preco,bairro,render_file))
+        # conn.commit()
+        cursor.execute("UPDATE games SET point_user_1 ='" + point_user_1 +"' WHERE momento = '"+momento+"'")
+        # lista = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+    def alter_game_point_user_2(self, point_user_2 ,momento ):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        # cursor.execute("INSERT INTO lista_promocoes (nome_empresa, tipo_produto, preco,bairro, imagem) VALUES (%s,%s,%s,%s,%s);", (nome_empresa,tipo_produto,preco,bairro,render_file))
+        # conn.commit()
+        cursor.execute("UPDATE games SET point_user_2 ='" + point_user_2 +"' WHERE momento = '"+momento+"'")
+        # lista = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        
