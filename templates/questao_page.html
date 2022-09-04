@@ -70,13 +70,15 @@
         <div class="col">
             <div id="user_1_div" class="col-sm">
                 1: <h4 id="user_1" value="{{dicio_users['user_1'][0][0]}}">{{dicio_users['user_1'][0][0]}}</h4>
-                <p>Pontuação: (1/10)</p>
+                <!-- <p>Pontuação: (1/10)</p> -->
+                <p>Pontuação: <p id="pontos"></p></p>
             </div>
         </div>
         <div class="col">
             <div id="user_2_div" class="col-sm">
                 2: <h4 id="user_2" value="{{dicio_users['user_2'][0][0]}}">{{dicio_users['user_2'][0][0]}}</h4>
-                <p>Pontuação: (1/10)</p>
+                <!-- <p>Pontuação: (1/10)</p> -->
+                <p>Pontuação: <p id="pontos"></p></p>
             </div>
         </div>
     </div>
@@ -95,25 +97,25 @@
                             <h5 class="card-header">Disciplina: {{lista[i][1]}}</h5>
                             <h5 class="card-header">Tópico: {{lista[i][3]}}</h5>
                             <div class="card-body">
-                            <h5 class="card-title">{{lista[i][2]}}</h5>
+                            <h5 id="nome_texto_questao_{{lista[i][0]}}" class="card-title">{{lista[i][2]}}</h5>
                             <hr>
                             <p class="card-text">{{lista[i][4]}}</p>
                             <hr>
-                            <form>
+                            <form class="form" id="{{lista[i][0]}}">
                                 {% for item in lista[i][5] %}
-                                    <input id="alternativa_selecionada" type="radio" value="{{ item[0:2].strip() }}" name="alternativa_selecionada">{{ item }}<br>
+                                    <input id="alternativa_selecionada_{{lista[i][0]}}" type="radio" value="{{ item[0:2].strip() }}" name="alternativa_selecionada_{{lista[i][0]}}">{{ item }}<br>
                                     <br>
+                                   
+                                    
                                 {% endfor %}
-                                    <br>
-                                    <div class="botoes" >
-                                        <a id="botao_responder" class="btn btn-primary" style="left: 0;margin-left: 20px;">Responder</a>
-                                        <!-- <a href="#" class="btn btn-primary" style="margin-left: 20px;">Anterior</a>
+                                    <button id="botao_responder" name="{{lista[i][0]}}" class="btn btn-primary" type="button" style="left: 0;margin-left: 20px;">Responder</a></button>
+                                    <!-- <a href="#" class="btn btn-primary" style="margin-left: 20px;">Anterior</a>
                                         <a href="#" class="btn btn-primary" style="margin-left: 20px;">Próxima</a> -->
-                                        <p id="resultado" style="font-size: 15px;color:black"></p>
+                                    <p id="resultado_{{lista[i][0]}}" name="{{lista[i][-1]}}" style="font-size: 15px;color:black"></p>
                                         
                                         <!-- PAGINACAO NAO DEU CERTO!! -->
                                         
-                                    </div>
+                                    
                                     
                             </form>
                             </div>
@@ -150,7 +152,7 @@
         </div>
     </div>
     
-    
+   <!-- Modal --> 
     <div id="myModal" data-backdrop="static"class="modal is-active" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
           <div class="modal-content" style="min-width: 350px;max-width: 70vw;">
@@ -163,16 +165,18 @@
                     <div class="input-group-prepend">
                       <span class="input-group-text" id="basic-addon1">@</span>
                     </div>
-                    <input type="text" id="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                   </div>
             </div>
             <div class="modal-footer">
-              <button id="botao_modal" type="submit" class="btn btn-primary">Entrar</button>
+              <a id="botao_modal" type="button" class="btn btn-primary">Entrar</a>
             </div>
           </div>
+          <!-- Modal -->
         </div>
       </div>
    <!-- Modal -->
+   
   
 
 <script type="text/javascript">
@@ -181,8 +185,10 @@
 
     $(document).ready(function() {
 
+        let input_value_alternativa;
         let username;
         username = $("#username").val();
+        
         let user_1; 
         user_1 = $("#user_1").text();
         let user_2; 
@@ -192,8 +198,9 @@
             'user_1':user_1,
             'user_2':user_2,
         }
-        
+        console.log("ENTRANDO -> "+dicio)
         $.post('/checar_login_page_questoes',dicio, function(data){
+            console.log("PRIMEIRO POST")
             console.log(data)
             if (data['status']=='ok'){
                 console.log(data['username'])
@@ -204,7 +211,9 @@
             else{
                 $("#myModal").modal('show');
                 $("#botao_modal").on('click', function(){
+                    console.log("DENTRO DO BOTAO DO MODAl")
                     username = $("#username").val();
+                    console.log(username)
                     dicio2 = {
                         'username':username,
                         'user_1':user_1,
@@ -212,7 +221,7 @@
                     }
                     $.post('/checar_login_page_questoes',dicio2, function(data){
                         console.log(data)
-                        username = $("#username").val()
+                        // username = $("#username").val()
                         if (data['ok'] == 'ok'){
                             console.log('resposta é ok')
                             $("#myModal").modal('hide');
@@ -256,12 +265,47 @@
         // $("body").on('change', function(){
         channel.bind(evento, function(data) {
             console.log(data)
+
             modelo_message1 = `<hr>
-                <p class="username_chat"><strong>Usuário (x) teve resposta -> ${data['resultado']}</strong>: </p>
+            <input id='${data['momento_to_focus']}' readonly style="width:100%;background-color:transparent; text-decorate:none; border:none">Usuário <strong>${data['user']}</strong> teve resposta da <strong>${data['nome_texto_questao']}</strong>: <strong>${data['resultado']}</strong></input>
                 
                 <hr>`;
 
-            $("#content").append(modelo_message1);  
+            $("#content").append(modelo_message1); 
+            $("#"+data['momento_to_focus']).focus();
+
+            //pegando o resultado via data['ponto']
+            if (data['ponto']==1){
+                console.log("ACERTOOOOOOU")
+                var pontos_a_somar = Math.abs(1)
+            }
+            else{
+                var pontos_a_somar = -Math.abs(-1)
+
+                console.log("ERRRRROuuuu")
+            }
+
+            // pegando o status atual
+            //  id="pontos"
+            var pontos_atual = $("#pontos").text();
+            if(pontos_atual == ''){
+                pontos_atual = 0;
+            }
+            else if(pontos_a_somar < 0 ){
+                pontos_a_somar = -Math.abs(pontos_a_somar)
+            }
+            else{
+                pontos_a_somar = Math.abs(pontos_a_somar)
+            }
+            // resultado = 
+            var resultado = Number(pontos_a_somar) +Number(pontos_atual)
+            console.log('pontos_atual: '+pontos_atual)
+            console.log('TYPE OF pontos_atual: '+typeof(pontos_atual))
+            console.log('pontos_a somar: '+pontos_a_somar)
+            console.log('TYPE OF pontos_a somar: '+typeof(pontos_a_somar))
+            console.log('REs: '+resultado)
+            pontos_atual = $("#pontos").text(resultado);
+
         });
 
         // });
@@ -270,65 +314,112 @@
 
         let alter;
 
-        $("[name=alternativa_selecionada]").on('click', function(){
-            alter =$(this).val();
-            // console.log("alternativa .>: " + alter)
-        });
+        
 
-        $('#botao_responder').on('click', function(){
-            // var alternativa_selecionada = $('#alternativa_selecionada').val();
-            // console.log("alternativa selecionada:_> "+ alternativa_selecionada)
-            // var alternativa_selecionada = $('#alternativa_selecionada').attr('value');
-            // console.log("alternativa selecionada:_> "+ alter)
-            // $.post('')
+        
+        // $("[name='alternativa_selecionada']").on('click', function(){
+        //     // console.log($(this).val())
+        //     // console.log("VALO DO INPUT")
+        //     input_value_alternativa = $(this).val();
+        // })
 
-            var id_questao = "{{ lista[0][0]|safe }}"
-            $("#botao_responder").attr('disable');
-            var url = $(location).attr('href');
-            // var url = 'http://127.0.0.1:5000/adm_geral/questao/Liderança/1662035587755/_evento_/366_evento_451';
+        // INPUT pronto
+        let valor_input_selecionado;
+        $("input").on('click', function(){
+            valor_input_selecionado = $(this).val();
+        })
 
-            var gab_questao = "{{ lista[0][-1]|safe }}";
-            console.log('----------');
+        // texto numero questao
+        let numero_texto_questao;
+
+
+        // BOTAO PRONTO
+        let id_questao_a_procurar;
+        $("button").on('click', function(){
+            console.log("ENTRO DO BOTAO")
+            console.log("ID DO BOTA -> " + $(this).attr('name'))
+            id_questao_a_procurar = $(this).attr('name');
+            
+            console.log("PEGANDO O VALOR DO RESPECTIVO INPUT")
+            console.log("----> INPUT SELECTED: " + valor_input_selecionado)
+
+            // pegar gabarito
+            var gab_questao = $("#resultado_"+id_questao_a_procurar).attr('name')
+            console.log('----GAB------');
             console.log(gab_questao);
-            dicio = {
-                'id_questao':id_questao,
-                'alternativa_selecionada':alter,
-                'gab_questao':gab_questao,
-                'evento':evento,
-                'momento':"{{ momento|safe }}",
-                'status':'pass',
-            }
 
+            // pegar o numero texto questao
+            nome_texto_questao = $("#nome_texto_questao_"+id_questao_a_procurar).text()
+
+            // momento_to_focus()
+
+            const now = new Date();
+            const momento_to_focus = now.getTime();
+
+            dicio = {
+                    'user':username,
+                    'id_questao':id_questao_a_procurar,
+                    'nome_texto_questao':nome_texto_questao,
+                    'alternativa_selecionada':valor_input_selecionado,
+                    'gab_questao':gab_questao,
+                    'evento':evento,
+                    'momento':"{{ momento|safe }}",
+                    'momento_to_focus':momento_to_focus,
+                    'status':'pass',
+                }
             $.post('/tratar_questao', dicio, function(data){
                 console.log(data)
-                $("#resultado").text(data['resultado'])
+                $("#resultado_"+data['id_questao']).text(data['resultado'])
             });
-
-            
-            if(window.closed){
-                $.post('/game_fechado', function(){
-
-                })
-            }
-
-            // channel.bind(evento, function(data) {
-            //     console.log(data)
-            //     modelo_message1 = `<hr>
-            //     <p class="username_chat"><strong>Usuário (x) teve resposta -> ${data['resultado']}</strong>: </p>
-                
-            //     <hr>`;
-
-            //     $("#content").append(modelo_message1);  
-            // });
-        
         });
-        
-        
+
+                // console.log("--> inputs: " + input_val)
+
+                // ------>
+                // // GAB feito
+                // var gab_questao = $("p", form_esse).attr('name');
+                // console.log('----GAB------');
+                // console.log(gab_questao);
+
+
+                // dicio = {
+                //     'id_questao':id_questao,
+                //     'alternativa_selecionada':alter,
+                //     'gab_questao':gab_questao,
+                //     'evento':evento,
+                //     'momento':"{{ momento|safe }}",
+                //     'status':'pass',
+                // }
+
+                // $.post('/tratar_questao', dicio, function(data){
+                //     console.log(data)
+                //     $("#resultado").text(data['resultado'])
+                // });
+
+                
+                // ------>
+            
+                        // ------>
+                    
+                        // channel.bind(evento, function(data) {
+                            //     console.log(data)
+                            //     modelo_message1 = `<hr>
+                            //     <p class="username_chat"><strong>Usuário (x) teve resposta -> ${data['resultado']}</strong>: </p>
+                            
+                            //     <hr>`;
+                            
+                            //     $("#content").append(modelo_message1);  
+                            // });
+                            
+                // });
+                    
+            
 
         
-
+            
     });
 
+   
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

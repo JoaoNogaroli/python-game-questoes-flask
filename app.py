@@ -384,6 +384,8 @@ def entender_link_gerar(disciplina,topico,quantidade,momento,evento,i_nome_from)
 
     print('LISTA FINAl')
     print(lista)
+    print('------------')
+    print(lista[0])
 
     return render_template('questao_page.html', dicio_users=dicio_users, lista=lista,range=range, len=len)
 
@@ -391,9 +393,14 @@ def entender_link_gerar(disciplina,topico,quantidade,momento,evento,i_nome_from)
 @app.route('/tratar_questao', methods=['POST'])
 def  tratar_questao():
 
+    user = request.form['user']
+    print("--USER ENVIANDO RESPSOTA----")
+    print(user)
+    nome_texto_questao = request.form['nome_texto_questao']
     id_questao = request.form['id_questao']
     gab_questao = str(request.form['gab_questao']).strip().lower()
     alternativa_selecionada = str(request.form['alternativa_selecionada']).strip().lower()
+    momento_to_focus = request.form['momento_to_focus']
     # print('Gab')
     # print(gab_questao)
     # print('ALt')
@@ -403,17 +410,24 @@ def  tratar_questao():
     if gab_questao == alternativa_selecionada:
         print("[CERTO]")
         resultado = 'Certo!'
+        ponto=1
     else:
         print("[ERRADO]")
         resultado = 'Errado!'
+        ponto=-1
 
     evento = request.form['evento']
 
     dicio ={
+        'user':user,
+        'id_questao':id_questao,
+        'nome_texto_questao':nome_texto_questao,
         'gab':gab_questao,
         'alt':alternativa_selecionada,
         'resultado':resultado,
+        'momento_to_focus':momento_to_focus,
         'evento':evento,
+        'ponto':ponto
     }
     
     try:
@@ -454,15 +468,27 @@ def checar_login_page_questoes():
         # print(type(user_2))
 
         if username == user_1:
-            return {'ok':'ok', 'username': username,'res':'username=user1'}
+            dicio = {
+                'ok':'ok', 'username': username,'res':'username=user1',
+            }
+            return dicio
         elif username == user_2:
-            return {'ok':'ok', 'username': username,'res':'username=user2'}
+            dicio = {
+                'ok':'ok', 'username': username,'res':'username=user2',
+            }
+            return dicio
         else:
-            return {'ok':'no', 'username':username}
+            dicio = {
+                'ok':'no', 'username':username,
+            }
+            return dicio
     except Exception as e:
         print(e)
-        username = 'sem usuario'
-        return {'ok':'no', 'username':username}
+        dicio = {
+                'ok':'no', 
+                'username':''
+            }
+        return dicio
         
 
 if __name__ == "__main__":
