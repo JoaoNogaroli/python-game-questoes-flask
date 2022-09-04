@@ -429,6 +429,7 @@ def  tratar_questao():
         'evento':evento,
         'ponto':ponto
     }
+    print(dicio)
     
     try:
         # print("EVENTO --->")

@@ -71,14 +71,14 @@
             <div id="user_1_div" class="col-sm">
                 1: <h4 id="user_1" value="{{dicio_users['user_1'][0][0]}}">{{dicio_users['user_1'][0][0]}}</h4>
                 <!-- <p>Pontuação: (1/10)</p> -->
-                <p>Pontuação: <p id="pontos"></p></p>
+                <p>Pontuação: <p id="pontos_{{dicio_users['user_1'][0][0]}}"></p></p>
             </div>
         </div>
         <div class="col">
             <div id="user_2_div" class="col-sm">
                 2: <h4 id="user_2" value="{{dicio_users['user_2'][0][0]}}">{{dicio_users['user_2'][0][0]}}</h4>
                 <!-- <p>Pontuação: (1/10)</p> -->
-                <p>Pontuação: <p id="pontos"></p></p>
+                <p>Pontuação: <p id="pontos_{{dicio_users['user_2'][0][0]}}"></p></p>
             </div>
         </div>
     </div>
@@ -275,36 +275,78 @@
             $("#"+data['momento_to_focus']).focus();
 
             //pegando o resultado via data['ponto']
-            if (data['ponto']==1){
-                console.log("ACERTOOOOOOU")
-                var pontos_a_somar = Math.abs(1)
-            }
-            else{
-                var pontos_a_somar = -Math.abs(-1)
 
-                console.log("ERRRRROuuuu")
-            }
+            console.log("USERNAME --> : "+ username)
+            if(data['user'] == user_1){
+                // console.log(username)
+                if (data['ponto']==1){
+                    console.log("ACERTOOOOOOU")
+                    var pontos_a_somar = Math.abs(1)
+                }
+                else{
+                    var pontos_a_somar = -Math.abs(-1)
 
-            // pegando o status atual
-            //  id="pontos"
-            var pontos_atual = $("#pontos").text();
-            if(pontos_atual == ''){
-                pontos_atual = 0;
+                    console.log("ERRRRROuuuu")
+                }
+
+                // pegando o status atual
+                //  id="pontos"
+                var pontos_atual = $("#pontos_"+user_1).text();
+                console.log("PONTOS ATUAL 1 --> :"+ pontos_atual)
+
+                if(pontos_atual == ''){
+                    pontos_atual = 0;
+                }
+                else if(pontos_a_somar < 0 ){
+                    pontos_a_somar = -Math.abs(pontos_a_somar)
+                }
+                else{
+                    pontos_a_somar = Math.abs(pontos_a_somar)
+                }
+                // resultado = 
+                var resultado = Number(pontos_a_somar) +Number(pontos_atual)
+                console.log('pontos_atual: '+pontos_atual)
+                console.log('TYPE OF pontos_atual: '+typeof(pontos_atual))
+                console.log('pontos_a somar: '+pontos_a_somar)
+                console.log('TYPE OF pontos_a somar: '+typeof(pontos_a_somar))
+                console.log('REs: '+resultado)
+                $("#pontos_"+user_1).text(resultado);
             }
-            else if(pontos_a_somar < 0 ){
-                pontos_a_somar = -Math.abs(pontos_a_somar)
-            }
-            else{
-                pontos_a_somar = Math.abs(pontos_a_somar)
-            }
-            // resultado = 
-            var resultado = Number(pontos_a_somar) +Number(pontos_atual)
-            console.log('pontos_atual: '+pontos_atual)
-            console.log('TYPE OF pontos_atual: '+typeof(pontos_atual))
-            console.log('pontos_a somar: '+pontos_a_somar)
-            console.log('TYPE OF pontos_a somar: '+typeof(pontos_a_somar))
-            console.log('REs: '+resultado)
-            pontos_atual = $("#pontos").text(resultado);
+            if(data['user'] == user_2){
+                // console.log(username)
+                if (data['ponto']==1){
+                    console.log("ACERTOOOOOOU")
+                    var pontos_a_somar = Math.abs(1)
+                }
+                else{
+                    var pontos_a_somar = -Math.abs(-1)
+
+                    console.log("ERRRRROuuuu")
+                }
+
+                // pegando o status atual
+                //  id="pontos"
+                var pontos_atual = $("#pontos_"+user_2).text();
+                console.log("PONTOS ATUAL 2 --> :"+ pontos_atual)
+                if(pontos_atual == ''){
+                    pontos_atual = 0;
+                }
+                else if(pontos_a_somar < 0 ){
+                    pontos_a_somar = -Math.abs(pontos_a_somar)
+                }
+                else{
+                    pontos_a_somar = Math.abs(pontos_a_somar)
+                }
+                // resultado = 
+                var resultado = Number(pontos_a_somar) +Number(pontos_atual)
+                console.log('pontos_atual: '+pontos_atual)
+                console.log('TYPE OF pontos_atual: '+typeof(pontos_atual))
+                console.log('pontos_a somar: '+pontos_a_somar)
+                console.log('TYPE OF pontos_a somar: '+typeof(pontos_a_somar))
+                console.log('REs: '+resultado)
+                $("#pontos_"+user_2).text(resultado);
+                }
+            
 
         });
 
