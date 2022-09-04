@@ -269,9 +269,9 @@ def link_questao():
 
 
     
-    link ='http://127.0.0.1:5000/'+disciplina+'/questao/'+topico+'/'+str(quantidade)+'/'+momento+'/_evento_/'+evento+'/_i_/'+str(i_nome_from)
+    # link ='http://127.0.0.1:5000/'+disciplina+'/questao/'+topico+'/'+str(quantidade)+'/'+momento+'/_evento_/'+evento+'/_i_/'+str(i_nome_from)
     
-    # link ='https://projeto-questoes-chat-nixquest.herokuapp.com/'+disciplina+'/questao/'+topico+'/'+str(quantidade)+'/'+momento+'/_evento_/'+evento+'/_i_/'+str(i_nome_from)
+    link ='https://projeto-questoes-chat-nixquest.herokuapp.com/'+disciplina+'/questao/'+topico+'/'+str(quantidade)+'/'+momento+'/_evento_/'+evento+'/_i_/'+str(i_nome_from)
     try:
         connection_db().insert_convite(evento,link,momento,nome_from,nome_chat_to,str(quantidade))
         print('[convite inserido no bd]')
