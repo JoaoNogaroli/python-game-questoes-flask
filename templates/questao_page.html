@@ -71,14 +71,14 @@
             <div id="user_1_div" class="col-sm">
                 1: <h4 id="user_1" value="{{dicio_users['user_1'][0][0]}}">{{dicio_users['user_1'][0][0]}}</h4>
                 <!-- <p>Pontuação: (1/10)</p> -->
-                <p>Pontuação: <p id="pontos_{{dicio_users['user_1'][0][0]}}"></p></p>
+                <p>Pontuação: <p id="pontos_{{dicio_users['cod_1']}}"></p></p>
             </div>
         </div>
         <div class="col">
             <div id="user_2_div" class="col-sm">
                 2: <h4 id="user_2" value="{{dicio_users['user_2'][0][0]}}">{{dicio_users['user_2'][0][0]}}</h4>
                 <!-- <p>Pontuação: (1/10)</p> -->
-                <p>Pontuação: <p id="pontos_{{dicio_users['user_2'][0][0]}}"></p></p>
+                <p>Pontuação: <p id="pontos_{{dicio_users['cod_2']}}"></p></p>
             </div>
         </div>
     </div>
@@ -291,7 +291,7 @@
 
                 // pegando o status atual
                 //  id="pontos"
-                var pontos_atual = $("#pontos_"+user_1).text();
+                var pontos_atual = $("#pontos_"+"{{dicio_users['cod_1'] |safe }}").text();
                 console.log("PONTOS ATUAL 1 --> :"+ pontos_atual)
 
                 if(pontos_atual == ''){
@@ -310,7 +310,7 @@
                 console.log('pontos_a somar: '+pontos_a_somar)
                 console.log('TYPE OF pontos_a somar: '+typeof(pontos_a_somar))
                 console.log('REs: '+resultado)
-                $("#pontos_"+user_1).text(resultado);
+                $("#pontos_"+"{{dicio_users['cod_1'] |safe }}").text(resultado);
             }
             if(data['user'] == user_2){
                 // console.log(username)
@@ -326,7 +326,7 @@
 
                 // pegando o status atual
                 //  id="pontos"
-                var pontos_atual = $("#pontos_"+user_2).text();
+                var pontos_atual = $("#pontos_"+"{{dicio_users['cod_2'] |safe }}").text();
                 console.log("PONTOS ATUAL 2 --> :"+ pontos_atual)
                 if(pontos_atual == ''){
                     pontos_atual = 0;
@@ -344,7 +344,7 @@
                 console.log('pontos_a somar: '+pontos_a_somar)
                 console.log('TYPE OF pontos_a somar: '+typeof(pontos_a_somar))
                 console.log('REs: '+resultado)
-                $("#pontos_"+user_2).text(resultado);
+                $("#pontos_"+"{{dicio_users['cod_2'] |safe }}").text(resultado);
                 }
             
 
